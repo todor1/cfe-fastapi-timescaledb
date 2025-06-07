@@ -103,9 +103,9 @@ alias dev="uv run uvicorn main:app --reload "
 #### Toml scripts examples  
 <https://github.com/astral-sh/uv/issues/6302>   
 
-### Docker  
+## Docker  
 
-#### Basic Workflow  
+### Basic Workflow  
 
 ```bash
 docker ps
@@ -122,7 +122,7 @@ docker run -it python:3.6.15-slim-buster
 2) Search the **tags** tab for specific version (3.13 / 3.6.15)
 3) Copy command and paste in terminal (docker pull python:3.6.15-slim-buster)
 
-#### Docker file  
+### Docker file  
 ```bash
 touch Dockerfile
 docker pull python:3.13.4-slim-bullseye
@@ -156,6 +156,78 @@ RUN chmod +x /opt/run.sh
 # Run the FastAPI project via the runtime script
 # when the container starts
 CMD ["/opt/run.sh"]
+```
+
+### Run Docker  
+
+Build in the local folder.  
+Container not public before pushed to the hub.  
+
+
+```bash
+docker build -t analytics-api -f Dockerfile.web .
+docker run analytics-api 
+
+docker build -t analytics-api:v1 -f Dockerfile.web .
+docker run analytics-api:v1 
+
+# becomes
+
+docker compose up --watch
+docker compose down or docker compose down -v (to remove volumes)
+docker compose run app /bin/bash or docker compose run app python
+```  
+
+### Stop Running Docker  
+```bash
+# list running containers
+docker ps
+
+docker stop <container_id_or_name>  
+docker stop fc3fff834f2a  
+
+# or
+docker stop my-app  
+docker stop analytics-api  
+
+# or
+docker compose down  
+
+# This command stops and removes the containers, networks, and volumes defined in the Docker Compose file. 
+# If you want to remove the **volumes** as well, you can use:
+# ! docker compose down -v
+# !Caution!: docker compose down -v will delete the volumes associated with your services, which can include your database data if the database stores its data in a volume.
+```
+
+### Docker Compose  
+Create and fill the [compose.yaml](compose.yaml) file
+
+Create an [](.env.compose) file and edit settings. 
+
+Set the arguments for Docker to use in the compose.yaml.
+
+```yaml
+    develop:
+      watch:
+        - action: rebuild
+          path: Dockerfile
+        - action: rebuild
+          path: requirements.txt
+        - action: rebuild
+          path: compose.yaml
+```
+watch on changes in above files, then rebuild the entire container.  
+
+```bash
+
+```
+
+
+```bash
+# start
+docker compose up
+# stop
+docker compose down
 ```
 
 ## Git  
