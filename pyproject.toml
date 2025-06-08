@@ -7,6 +7,8 @@ requires-python = ">=3.12"
 dependencies = [
     "fastapi==0.115.11",
     "gunicorn>=23.0.0",
+    "ipykernel>=6.29.5",
+    "pip>=25.1.1",
     "psycopg[binary]>=3.2.9",
     "pydantic>=2.11.5",
     "python-decouple>=3.8",

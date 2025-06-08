@@ -3,7 +3,7 @@ Own your data pipeline with Python and Postgres
 
 <https://www.codingforentrepreneurs.com/courses/analytics-api-with-fastapi-and-timescaledb>  
 
-## UV Python Project Setup   
+## 1 UV Python Project Setup   
 
 ```bash
 python.exe -m pip install --upgrade pip  
@@ -89,9 +89,50 @@ uv add -r requirements.txt
 uv lock
 ```
 
+
+## 2 Git  
+```bash
+echo "# cfe-fastapi-timescaledb" >> README.md
+git init
+git add .
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/todor1/cfe-fastapi-timescaledb.git
+git push -u origin main
+```  
+```bash
+
+# The error "remote origin already exists" means you've already set up a remote repository named "origin" for your local Git repository. You have a few options to resolve this:
+
+# Verify the existing remote:
+git remote -v 
+
+# to list the existing remote repositories and their URLs. This will show you what the current "origin" is pointing to.
+# If the existing remote is incorrect:
+# 1) Remove the existing remote: 
+
+git remote remove origin
+
+# 2) Add the correct remote: 
+
+git remote add origin https://github.com/todor1/cfe-fastapi-timescaledb.git  
+
+git push --set-upstream origin main
+
+# 3) If you want to keep the existing remote and add a new one:
+# Use a different name for the new remote: 
+# git remote add <new_remote_name> https://github.com/todor1/cfe-fastapi-timescaledb.git 
+# e.g.:
+
+git remote add github https://github.com/todor1/cfe-fastapi-timescaledb.git  
+
+git push --set-upstream origin main
+```
+
+
 <https://pypi.org/project/python-decouple/> 
 
-## FastAPI  
+## 4 FastAPI  
 ### Start command  
 uvicorn main:app --reload  
 
@@ -103,7 +144,7 @@ alias dev="uv run uvicorn main:app --reload "
 #### Toml scripts examples  
 <https://github.com/astral-sh/uv/issues/6302>   
 
-## Docker  
+## 3 Docker  
 
 ### Basic Workflow  
 
@@ -218,54 +259,32 @@ Set the arguments for Docker to use in the compose.yaml.
 ```
 watch on changes in above files, then rebuild the entire container.  
 
-```bash
-
-```
-
 
 ```bash
 # start
 docker compose up
+docker compose up --watch
 # stop
 docker compose down
 ```
 
-## Git  
+#### Local Start
+In VENV -> default port 8000:
 ```bash
-echo "# cfe-fastapi-timescaledb" >> README.md
-git init
-git add .
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/todor1/cfe-fastapi-timescaledb.git
-git push -u origin main
-```  
-```bash
-
-# The error "remote origin already exists" means you've already set up a remote repository named "origin" for your local Git repository. You have a few options to resolve this:
-
-# Verify the existing remote:
-git remote -v 
-
-# to list the existing remote repositories and their URLs. This will show you what the current "origin" is pointing to.
-# If the existing remote is incorrect:
-# 1) Remove the existing remote: 
-
-git remote remove origin
-
-# 2) Add the correct remote: 
-
-git remote add origin https://github.com/todor1/cfe-fastapi-timescaledb.git  
-
-git push --set-upstream origin main
-
-# 3) If you want to keep the existing remote and add a new one:
-# Use a different name for the new remote: 
-# git remote add <new_remote_name> https://github.com/todor1/cfe-fastapi-timescaledb.git 
-# e.g.:
-
-git remote add github https://github.com/todor1/cfe-fastapi-timescaledb.git  
-
-git push --set-upstream origin main
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+alias dev="cd src && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
 ```
+Create nbs folder
+Install ipykernel -> only for testing in Jupyter, not for docker container
+```bash
+uv add ipykernel
+(uv add pip)
+```
+
+## Data Science Template  
+[Cookicutter Data Science](data_science_template.md)
+
+<https://cookiecutter-data-science.drivendata.org/#with-pip> 
+
+<https://github.com/drivendataorg/cookiecutter-data-science/tree/master>
 
