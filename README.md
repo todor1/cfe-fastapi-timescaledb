@@ -89,6 +89,16 @@ uv add -r requirements.txt
 uv lock
 ```
 
+### 7 UV Docs Links
+[Creating a new project](https://docs.astral.sh/uv/guides/projects/#creating-a-new-project)
+
+[Managing dependencies](https://docs.astral.sh/uv/guides/projects/#managing-dependencies)
+
+[Docker example](https://docs.astral.sh/uv/guides/integration/docker/#non-editable-installs)  
+
+[Using uv in pre-commit](https://docs.astral.sh/uv/guides/integration/pre-commit/)  
+
+[Building distributions](https://docs.astral.sh/uv/guides/projects/#building-distributions)
 
 ## 2 Git  
 ```bash
