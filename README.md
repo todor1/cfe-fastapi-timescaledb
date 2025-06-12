@@ -3,6 +3,14 @@ Own your data pipeline with Python and Postgres
 
 <https://www.codingforentrepreneurs.com/courses/analytics-api-with-fastapi-and-timescaledb>  
 
+## Data Science Template  
+[Cookicutter Data Science](data_science_template.md)
+
+<https://cookiecutter-data-science.drivendata.org/#with-pip> 
+
+<https://github.com/drivendataorg/cookiecutter-data-science/tree/master>
+
+
 ## 1 UV Python Project Setup   
 
 ```bash
@@ -281,8 +289,20 @@ docker compose down
 #### Local Start
 In VENV -> default port 8000:
 ```bash
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+source .venv/Scripts/Activate && cd src
+
+# venv command
+uvicorn main:app --reload
+uvicorn main:app --host localhost --port 8080 --reload
 alias dev="cd src && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+
+curl -i -X GET http://localhost:8000/healthz
+
+curl -i -X GET http://localhost:8080/healthz
+curl -i -X GET http://localhost:8080/api/events/
+
+# docker command:
+uvicorn main:app --host 0.0.0.0 --port 8002 --reload
 ```
 Create nbs folder
 Install ipykernel -> only for testing in Jupyter, not for docker container
@@ -291,10 +311,9 @@ uv add ipykernel
 (uv add pip)
 ```
 
-## Data Science Template  
-[Cookicutter Data Science](data_science_template.md)
+The statement *print(os.environ.get("DATABASE_URL"))* in routing.py does give a result when running docker compose, 
+but None if running the local uvicorn main:app command.
 
-<https://cookiecutter-data-science.drivendata.org/#with-pip> 
+That is why we create a local config.py under api/db, running on top of python-decouple package.  
 
-<https://github.com/drivendataorg/cookiecutter-data-science/tree/master>
 
