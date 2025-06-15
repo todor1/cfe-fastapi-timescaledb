@@ -279,17 +279,21 @@ watch on changes in above files, then rebuild the entire container.
 
 
 ```bash
-# start
+### start
 docker compose up
 docker compose up --watch
-# stop
+### stop
 docker compose down
+### stop & delete db
+# docker compose down -v
 ```
 
 #### Local Start
 In VENV -> default port 8000:
 ```bash
 source .venv/Scripts/Activate && cd src
+
+source .venv/Scripts/Activate && cd src && uvicorn main:app --reload
 
 # venv command
 uvicorn main:app --reload
@@ -317,3 +321,27 @@ but None if running the local uvicorn main:app command.
 That is why we create a local config.py under api/db, running on top of python-decouple package.  
 
 
+#### Changing Models  
+
+Delete previous configuration (without using Alembic)  
+
+```bash
+### stop & delete the database
+# docker compose down -v
+```
+
+Add datetime fields to the model
+```python
+created_at: datetime = Field(
+        default_factory=get_utc_now,
+        sa_type=sqlmodel.DateTime(timezone=True),
+        nullable=False,
+    )
+```
+
+```bash
+### restart the project
+docker compose up --watch
+
+source .venv/Scripts/Activate && cd src && uvicorn main:app --reload
+```
