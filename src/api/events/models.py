@@ -1,59 +1,43 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import List, Optional
-
-# from pydantic import BaseModel, Field
-import sqlmodel
-from sqlmodel import SQLModel, Field
+from sqlmodel import Field, DateTime
 from timescaledb import TimescaleModel
+from timescaledb.utils import get_utc_now
 
-def get_utc_now():
+
+class EventModel(TimescaleModel, table=True):
     """
-    Why use .replace(tzinfo=timezone.utc) after already using datetime.now(timezone.utc)?
-    In most cases, this is unnecessary because datetime.now(timezone.utc) already returns a timezone-aware object.
-    However, there are a few edge cases where someone might do this:
-    - To ensure consistency if the code is reused or modified later.
-    - To normalize the timezone info in case it came from a different source or was altered.
-    - To forcefully overwrite any existing tzinfo (though in this case, it's already UTC).
-
-    dt = datetime.now(timezone.utc)
-    print(dt)  # e.g., 2025-06-15 11:54:08.123456+00:00
-
-    dt_fixed = dt.replace(tzinfo=timezone.utc)
-    print(dt_fixed)  # Same output, but tzinfo is explicitly set again
-
-    The code is functionally equivalent to just datetime.now(timezone.utc),
-    and the .replace() part is usually redundant unless you're trying to enforce or reset the timezone info explicitly.
+    Track page visits @ any given time
+    page: about/contact/pricing, etc
     """
-    return datetime.now(timezone.utc).replace(tzinfo=timezone.utc)
 
-
-class EventModel(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    page: Optional[str] = ""
+    page: str = Field(index=True)
     description: Optional[str] = ""
-    created_at: datetime = Field(
-        default_factory=get_utc_now,
-        sa_type=sqlmodel.DateTime(timezone=True),
-        nullable=False,
-    )
     updated_at: datetime = Field(
         default_factory=get_utc_now,
-        sa_type=sqlmodel.DateTime(timezone=True),
+        # sa_type=TimescaleModel.DateTime(timezone=True), # returns an error
+        sa_type=DateTime(timezone=True),
         nullable=False,
     )
 
+    __chunk_time_interval__ = "INTERVAL 1 day"
+    __drop_after__ = "INTERVAL 3 months"
 
-class EventListSchema(SQLModel):
+
+
+
+
+class EventListSchema(TimescaleModel):
     count: int
     results: List[EventModel]
 
 
-class EventCreateSchema(SQLModel):
+class EventCreateSchema(TimescaleModel):
     page: str
     description: Optional[str] = Field(default="my default description")
 
 
-class EventUpdateSchema(SQLModel):
+class EventUpdateSchema(TimescaleModel):
     """The only field that we allow to be updated via put method"""
 
     description: str
