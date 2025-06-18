@@ -341,6 +341,7 @@ created_at: datetime = Field(
 
 ```bash
 docker compose down
+# docker compose down -v
 
 ### restart the project
 docker compose up --watch
