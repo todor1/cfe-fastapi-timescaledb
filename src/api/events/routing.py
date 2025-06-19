@@ -1,4 +1,4 @@
-from sqlalchemy import func
+from sqlalchemy import func, case
 from sqlmodel import Session, select
 from fastapi import APIRouter, Depends, HTTPException, Query
 from api.db.session import get_session
@@ -6,15 +6,24 @@ from .models import (
     EventModel,
     EventBucketSchema,
     EventCreateSchema,
-    EventUpdateSchema,
-    get_utc_now,
 )
 from timescaledb.hyperfunctions import time_bucket
 from typing import List
 
 router = APIRouter()
 
-DEFAULT_LOOKUP_PAGES = ["/about", "/contact", "/pages", "/pricing"]
+DEFAULT_LOOKUP_PAGES = [
+    "/",
+    "/about",
+    "/pricing",
+    "/contact",
+    "/blog",
+    "/products",
+    "/login",
+    "/signup",
+    "/dashboard",
+    "/settings",
+]
 
 
 # GET /api/events
@@ -22,19 +31,32 @@ DEFAULT_LOOKUP_PAGES = ["/about", "/contact", "/pages", "/pricing"]
 def read_events(
     duration: str = Query(default="1 day"),
     pages: List = Query(default=None),
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
 ):
+    os_case = case(
+        (EventModel.user_agent.ilike("%windows%"), "Windows"),
+        (EventModel.user_agent.ilike("%macintosh%"), "MacOS"),
+        (EventModel.user_agent.ilike("%iphone%"), "iOS"),
+        (EventModel.user_agent.ilike("%android%"), "Android"),
+        (EventModel.user_agent.ilike("%linux%"), "Linux"),
+        else_="Other",
+    ).label("operating_system")
     # bucket width and time field in the db table
     bucket = time_bucket(duration, EventModel.time)
-    lookup_pages = pages if isinstance(pages, list) and len(
-        pages) > 0 else DEFAULT_LOOKUP_PAGES
+    lookup_pages = (
+        pages if isinstance(pages, list) and len(pages) > 0 else DEFAULT_LOOKUP_PAGES
+    )
     query = (
-        select(bucket.label("bucket"),
-               EventModel.page.label("page"),
-               func.count().label("count"))
+        select(
+            bucket.label("bucket"),
+            os_case,
+            EventModel.page.label("page"),
+            func.round(func.avg(EventModel.duration), 2).label("avg_duration"),
+            func.count().label("count"),
+        )
         .where(EventModel.page.in_(lookup_pages))
-        .group_by(bucket, EventModel.page)
-        .order_by(bucket, EventModel.page)
+        .group_by(bucket, os_case, EventModel.page)
+        .order_by(bucket, os_case, EventModel.page)
     )
     results = session.exec(query).all()
     return results
@@ -48,31 +70,6 @@ def get_event(event_id: int, session: Session = Depends(get_session)):
     if not result:
         raise HTTPException(status_code=404, detail="Event not found.")
     return result
-
-
-# UPDATE this data
-# PUT /api/events/12
-@router.put("/{event_id}", response_model=EventModel)
-def update_event(
-    event_id: int,
-    payload: EventUpdateSchema,
-    session: Session = Depends(get_session),
-):
-    query = select(EventModel).where(EventModel.id == event_id)
-    obj = session.exec(query).first()
-    if not obj:
-        raise HTTPException(status_code=404, detail="Event not found.")
-    data = payload.model_dump()
-    # change respective fields in object with payload values
-    for k, v in data.items():
-        if k == "id":
-            continue
-        setattr(obj, k, v)
-    obj.updated_at = get_utc_now()
-    session.add(obj)
-    session.commit()
-    session.refresh(obj)
-    return obj
 
 
 # SEND data here

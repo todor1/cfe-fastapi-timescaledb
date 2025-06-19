@@ -5,6 +5,9 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "autopep8>=2.3.2",
+    "black>=25.1.0",
+    "faker>=37.4.0",
     "fastapi==0.115.11",
     "gunicorn>=23.0.0",
     "ipykernel>=6.29.5",
@@ -17,6 +20,7 @@ dependencies = [
     "sqlmodel>=0.0.24",
     "timescaledb>=0.0.4",
     "uvicorn>=0.34.3",
+    "yapf>=0.43.0",
 ]
 
 

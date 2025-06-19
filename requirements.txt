@@ -8,5 +8,12 @@ timescaledb
 requests
 python-decouple
 psycopg[binary] # psycopg v3
-# psycopg2-binary
-# ipykernel -> only for testing in Jupyter, not for docker container  -> uv add ipykernel
+### psycopg2-binary
+### ipykernel -> only for testing in Jupyter, not for docker container  -> uv add ipykernel
+faker
+### autoformatters
+autopep8
+# black
+# yapf
+# ruff
+
