@@ -3,7 +3,7 @@ uvicorn
 gunicorn
 sqlmodel
 pydantic
-sqlalchemy
+sqlalchemy>=2.0.0
 timescaledb
 requests
 python-decouple
@@ -15,4 +15,7 @@ autopep8
 # black
 # yapf
 # ruff
+
+# Explicitly include SQLAlchemy PostgreSQL driver
+sqlalchemy[postgresql_psycopg2binary]
 
