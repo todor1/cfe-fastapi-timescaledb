@@ -349,15 +349,17 @@ docker compose up --watch
 source .venv/Scripts/Activate && cd src && uvicorn main:app --reload
 ```
 
-
 ## Deploy   
 
 ### Use railway.json file for setup  
 Attention to docker file paths
 
 ### Paste prod db link into railway variables:  
+Problems when importing psycopg2 in some dependencies, not able to verify the site health thereafter  
+
 DATABASE_URL=postgres://tsdbadmin...    
 
+Possible solution from Copilot:  
 In your code or configuration (likely in your DATABASE_URL), make sure the connection string uses:
 
 **postgresql**://user:password@host:port/dbname
