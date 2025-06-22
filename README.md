@@ -348,3 +348,15 @@ docker compose up --watch
 
 source .venv/Scripts/Activate && cd src && uvicorn main:app --reload
 ```
+
+
+## Deploy   
+
+### Use railway.json file for setup  
+Attention to docker file paths
+
+### Paste prod db link into railway variables:  
+DATABASE_URL=postgres://tsdbadmin...  
+
+### Set port also as a variable in railway: 
+PORT=8080
