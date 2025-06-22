@@ -356,7 +356,14 @@ source .venv/Scripts/Activate && cd src && uvicorn main:app --reload
 Attention to docker file paths
 
 ### Paste prod db link into railway variables:  
-DATABASE_URL=postgres://tsdbadmin...  
+DATABASE_URL=postgres://tsdbadmin...    
+
+In your code or configuration (likely in your DATABASE_URL), make sure the connection string uses:
+
+**postgresql**://user:password@host:port/dbname
+
+**Not**:  
+*postgres*://user:password@host:port/dbname  
 
 ### Set port also as a variable in railway: 
 PORT=8080

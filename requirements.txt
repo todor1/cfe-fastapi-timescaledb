@@ -1,21 +1,21 @@
-fastapi==0.115.11
+fastapi
 uvicorn
 gunicorn
 sqlmodel
 pydantic
-sqlalchemy>=2.0.0
+sqlalchemy
 timescaledb
 requests
 python-decouple
-psycopg2-binary>=2.9.9  # PostgreSQL adapter for Python
+psycopg[binary] # psycopg v3
+# psycopg2-binary>=2.9.9  # PostgreSQL adapter for Python
 ### ipykernel -> only for testing in Jupyter, not for docker container  -> uv add ipykernel
-faker
+# faker
 ### autoformatters
-autopep8
+# autopep8
 # black
 # yapf
 # ruff
-
 # Explicitly include SQLAlchemy PostgreSQL driver
-sqlalchemy[postgresql_psycopg2binary]
+# sqlalchemy[postgresql_psycopg2binary]
 
