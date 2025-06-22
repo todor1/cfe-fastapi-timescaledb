@@ -20,6 +20,7 @@ services:
       watch:
         - action: rebuild
           path: Dockerfile.web
+          # path: Dockerfile
         - action: rebuild
           path: requirements.txt
         - action: rebuild
